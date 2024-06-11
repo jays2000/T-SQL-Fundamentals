@@ -7,7 +7,7 @@
 
 # Ch.2 - Single Table Queries
 ## Elements of the SELECT Statement
-### FROM CLAUSE
+### FROM clause
 -- specifies the name of the table to query
 ```
 --Selects orderid, custid, empid, orderdate, freight attritubtes/columns from the Orders table in Sales schema
@@ -22,4 +22,18 @@ FROM Sales.Orders;
 SELECT orderid, empid, orderdate, freight, custid
 FROM Sales.Orders
 WHERE custid = 71;
+```
+### GROUP BY clause
+-- arranges rows returned by previous logical processsing phase into groups\
+-- You specify how rows are grouped in GROUP BY clause with elements/expressions\
+-- Produces a group for each distinct combo of specified elements/expressions in the clause\
+-- All phases after GROUP BY performs operations on groups instead of individual rows.\
+-- Each group is represented by a single row < br / > 
+```
+-- Selects empid and order year from the orders table and groups them by empid and order year
+SELECT empid, YEAR(orderdate) as orderyear
+FROM Sales.Orders
+WHERE custid = 71
+GROUP BY empid, YEAR(orderdate)
+
 ```
