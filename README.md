@@ -9,7 +9,8 @@
 ## Elements of the SELECT Statement
 ### SELECT statement - statement queries a table, applies changes, and returns a result (table)
 ```
-SELECT empid, YEAR(orderdate) AS orderyear, COUNT(*) AS numorders FROM Sales.Orders
+SELECT empid, YEAR(orderdate) AS orderyear, COUNT(*) AS numorders
+FROM Sales.Orders
 WHERE custid = 71
 GROUP BY empid, YEAR(orderdate)
 HAVING COUNT(*) > 1
