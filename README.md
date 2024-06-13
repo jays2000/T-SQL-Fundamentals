@@ -54,9 +54,9 @@ SELECT orderid, orderdate
 FROM Sales.Orders;
 ```
 ### ORDER BY clause - sorts the rows of the result 
--- guarantees order in a table
--- specify elements(columns/attributes) to order 
--- Specify ASC-ascending (default) or DESC-descending order
+-- guarantees order in a table\
+-- specify elements(columns/attributes) to order\
+-- Specify ASC-ascending (default) or DESC-descending order\
 ```
 -- returns employee information sorted by newest hire date to oldest
 SELECT empid, firstname, lastname, hiredate
