@@ -7,6 +7,22 @@
 
 # Ch.2 - Single Table Queries
 ## Elements of the SELECT Statement
+### SELECT statement - statement queries a table, applies changes, and returns a result (table)
+```
+SELECT empid, YEAR(orderdate) AS orderyear, COUNT(*) AS numorders FROM Sales.Orders
+WHERE custid = 71
+GROUP BY empid, YEAR(orderdate)
+HAVING COUNT(*) > 1
+ORDER BY empid, orderyear;
+```
+- SELECT statement clauses are processed in this order:\
+  - 1. FROM
+    2. WHERE
+    3. GROUP BY
+    4. HAVING
+    5. ORDER BY
+    6. SELECT
+    
 ### FROM clause - specifies the name of the table to query
 ```
 --Selects orderid, custid, empid, orderdate, freight attritubtes/columns from the Orders table in Sales schema
