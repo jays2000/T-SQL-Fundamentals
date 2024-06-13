@@ -80,3 +80,11 @@ SELECT empid, firstname, lastname, hiredate
 FROM HR.Employees
 ORDER BY hiredate DESC
 ```
+### TOP filter - used to return the specified number of rows
+  -- can specify a number or percentage
+  ```
+  -- return top 5 rows from the order tables ordered by hire date
+  SELECT TOP (5) empid, firstname, lastname, hiredate
+  FROM HR.Employees
+  ORDER BY hiredate DESC
+  ```
