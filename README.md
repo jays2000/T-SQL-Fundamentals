@@ -16,12 +16,12 @@ HAVING COUNT(*) > 1
 ORDER BY empid, orderyear;
 ```
 - SELECT statement clauses are processed in this order:\
-  - 1. FROM
-    2. WHERE
-    3. GROUP BY
-    4. HAVING
-    5. ORDER BY
-    6. SELECT
+  1. FROM
+  2. WHERE
+  3. GROUP BY
+  4. HAVING
+  5. ORDER BY
+  6. SELECT
     
 ### FROM clause - specifies the name of the table to query
 ```
