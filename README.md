@@ -113,3 +113,57 @@ ORDER BY hiredate DESC
   END AS valuecategory
   FROM Sales.OrderValues;
   ```
+
+
+
+  # CH. 3 Joins
+  - Table operator - Operates on input tables, applies logical processing phases, returns a table result in the FROM clause.
+  - JOIN table operator acts on 2 input tables.
+  - Combines table together
+ 
+    ## CROSS JOINS
+    - Joins 2 tables together and returns a Cartesian Product of the tables as a result.
+    - implements 1 Logical processing phase - the Cartesian Product
+    - Cartesion Product - each row in one input table matches all rows in the other input table
+    - if you have m rows in one table and n rows in the other table, you get m x n rows in the result table.
+      ```
+      SELECT C.custid, E.empid
+      FROM Sales.Customers AS C
+        CROSS JOIN HR.Employees AS E;
+      ```
+
+    ## Self JOIN
+    - Joins an instance of a table with itself
+    - supported by all JOIN types (cross, inner, outer)
+    - Joins multiple instances of the same table
+      ```
+      SELECT E1.empid, E1.firstname, E1.lastname,
+             E2.empid, E2.firstname, E2.lastname
+      FROM HR.Employees AS E1
+        CROSS JOIN HR.Employees AS E2;
+      ```
+
+    ## INNER JOIN
+    - Joins 2 tables based on a JOIN condition
+    - 2 logical query processsing phases
+    - Applies Cartesion Product phase, then applies filter phase to filter rows using ON clause
+    - Must include ON clause
+    - ON Clause/ JOIN condition - specifies the predicate used to filter rows
+      ```
+      SELECT E.empid, E.firstname, E.lastname, O.orderid
+      FROM HR.Employees AS E
+        INNER JOIN Sales.Orders
+          ON E.empid = O.empid;
+      ```
+
+    ## Composite JOIN
+    - Join where you need to match multiple attributes from each table
+    - Usually used when a primary-foreign key relationship is based on multiple attributes
+      ```
+      FROM dbo.Tabl1 AS T1
+        INNER JOIN dbo.Table2 AS T2
+        ON T1.col1 = T2.col1 AND T1.col2 = T2.col2
+      ```
+
+    ## Multi-Join queries
+    
