@@ -166,4 +166,36 @@ ORDER BY hiredate DESC
       ```
 
     ## Multi-Join queries
+    - When more than 1 table operator appears in the FROM clause, table operators are logically processed in           order.
+    - The result of the first table operator is used as the left input table to the second table operator and so       on.
+    - The first JOIN operates on 2 base tables but all other joins get the result from the preceding JOINs as           their left input table.
+      ```
+      SELECT
+      C.custid, C.companyname, O.orderid,
+      OD.productid, OD.qty
+      FROM Sales.Customers AS C
+        INNER JOIN Sales.Orders AS O
+          ON C.custid = O.custid
+        INNER JOIN Sales.OrderDetails AS OD
+          ON O.orderid = OD.orderid;
+      ```
+
+    ## OUTER JOINS
+    - Adds rows from the preserved table with no matches in other input table to the result table.
+    - includes inner rows and outer rows.
+    - identitifies the rows with no matches from the preserved table in the other input table based on the ON           clause, and adds those rows to the result table produced by the first 2 phases of the JOIN.
+    - 3 processing phases - Cartesian Product, filter, Add outer rows
+    - Make a table the preserved table by using the keywords LEFT OUTER JOIN, RIGHT OUTER JOIN, or FULL OUTER           JOIN.
+    - OUTER keyword is optional
+    - LEFT - means that the table to the left of the JOIN keyword is preserved.
+    - RIGHT - means that the table to the right of the JOIN keyword is preserved.
+    - FULL - means that the table both tables to the left and right of the JOIN keyword is preserved.
+    - NULLS are used as placeholders for the attributes in the nonpreserved side of the JOIN in outer rows.
+      ```
+      -- Returns customers and their orders, also returns customers without orders
+      SELECT C.custid, C.companyname, O.orderid
+      FROM Sales.Customers AS C
+        LEFT OUTER JOIN Sales.Orders AS O
+          ON C.custid = O.custid
+      ```
     
