@@ -198,4 +198,28 @@ ORDER BY hiredate DESC
         LEFT OUTER JOIN Sales.Orders AS O
           ON C.custid = O.custid
       ```
-    
+    # Ch. 4 - Subqueries
+    - Sub query - A query within a query used to avoid using separate queries for a solution
+    - Outer query - Outermost query whose result is returned to the caller
+    - Inner query (subquery) - result is used by the outer query.
+        - Acts in place of an expression that is based on a constant or variable.
+        - results of a subqery can change based on changes in the queried table.
+    - Used to avoid the need for separate steps in your solution that stores intermediate results in a variables.
+    ## Self Contained subqueries - Subquery independent of outer query tables.
+    - Evaluated once, then the outer query used the results from the subquery
+      ### Self contained Scalar subquery - returns a single value
+      - can appear anywhere a single valued expression can appear (ex: WHERE clause)
+      - MUST return a single value
+        ```
+        SELECT orderid, orderdate, empid, custid
+        FROM Sales.Orders
+        WHERE orderid = ( SELECT Max(O.orderid)
+                FROM Sales.Orders AS O)
+        ```
+      ### Self Contained MultiValued subquery - returns multiple values as a column
+      - IN predicate operates on a multivalued subquery
+        ```
+        WHERE empid IN (SELECT E.empid
+                        FROM HR.Employees AS E
+                        WHERE E.lastname LIKE N 'D%') 
+        ```
