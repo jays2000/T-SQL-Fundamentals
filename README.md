@@ -353,3 +353,19 @@ GO
 
   SELECT * FROM dbo.GetCustOrders(5)   <--- query to use tvf and pass in parameters
   ```
+## APPLY operator
+- Table operator used in FROM clause , operates on 2 tables
+- CROSS APPLY - applies the right table to each row of the left table and produces a table result.
+  - Similar to JOIN  but can reference the table on the left side because it is evaluated first.
+  - The right table is evaluated per row from the left table
+  ```
+  SELECT C.custid, A.orderid, A.orderdate
+  FROM Sales.Customers AS C
+    CROSS APPLY
+      (SELECT TOP (3) orderid, empid, orderdate, requireddate
+  FROM Sales.Orders AS O
+  WHERE O.custid = C.custid
+  ORDER BY orderdate DESC, orderid DESC) AS A;
+  ```
+- OUTER APPLY - returns rows from the left table even if there is no match
+  - preserves all left table rows if no match
