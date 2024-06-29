@@ -223,3 +223,133 @@ ORDER BY hiredate DESC
                         FROM HR.Employees AS E
                         WHERE E.lastname LIKE N 'D%') 
         ```
+    ## Correlated subqueries
+    - subqueries that refer to attributes from tables in the outer query.
+    - dependent on outer query tables
+    - subquery is evaluated separately for each outer row in the logical query processing step in which the subquery appears.
+      ```
+      SELECT custid, orderid, orderdate, empid
+      FROM Sales.Orders AS O1
+      WHERE orderid = (SELECT MAX(O2.orderid)
+                       FROM Sales.Orders AS O2
+                       WHERE O2.custid = O1.custid)
+      ```
+
+      ## EXISTS predicate
+      - accepts a subquery as input and returns True if subquery returns any rows, and false if not.
+      - Uses 2 value predicate logic
+        ```
+        SELECT custid, companyname
+        FROM Sales.Customers AS C
+        WHERE country = N'Spain'
+          AND EXISTS
+            (SELECT * FROM Sales.Orders AS O
+        WHERE O.custid = C.custid);
+        ```
+### Ch.5 - Table Expressions
+- Table expression - An expression, typically a query, that returns a table result
+- Used to help simplify code, improve maintainability, and encapsulate querying logic
+- Named table expression is a table expression assigned a name and you can interact with it like a base table
+- 4 types - Derived Tables, Common Table Expression (CTE), View, Inline Table-valued Function (ITVF)
+- When queryihg a table expression, the inner query is merged with the outer query into one query against the underlying object
+  ## Derived Tables
+  - table expression defined in the FROM clause of the outer query
+  - scope of existance is the outer query, once the query is finished the derived table is gone
+  - Use parenthesis to define the derived table, followed by AS and the derived table name
+    ```
+    SELECT *
+    FROM (SELECT custid, companyname
+          FROM Sales.Customers
+          WHERE country = N'USA') AS USACusts  <-- Derived Table name
+    ```
+  - For valid inner query in table expressions, order is not guaranteed (can't use order by clause for presentation), All columns must have names, all column names must be unqiue.
+  - Arguments (variables, functions) can be used in inner query
+  - Outer query can access aliases from inner query
+    
+  ## Common Table Expressions (CTE)
+  - Table expression defined using WITH AS CTE_name, wrapped in parenthesis
+  - more flexible than derived table
+    ```
+    WITH USACusts AS       <-- CTE name defined as USACusts
+    (  
+      SELECT custid, companyname
+      FROM Sales.Customers            <---- Inner query for CTE defined in parenthesis
+      WHERE country = N'USA'
+    )
+    SELECT * FROM USACusts       <--- The outer query against the CTE
+    ```
+  - CTE's are not nested, but separated by commas to define multiple CTE's
+    - Each CTE can refer to all previously defined CTE's
+    - Outer query can refer to all CTE's
+  ```
+  
+  WITH C1 AS (
+    SELECT YEAR(orderdate) AS orderyear, custid
+    FROM Sales.Orders
+  ),   <---- separated by comma
+  C2 AS (
+    SELECT orderyear, COUNT(DISTINCT custid) AS numcusts
+    FROM C1
+    GROUP BY orderyear
+  )
+  SELECT orderyear, numcusts
+  FROM C2
+  WHERE numcusts > 70;
+  ```
+  - Can refer to the same instance of a CTE in table operators like JOIN because the CTE is defined before the outer query's FROM clause
+  ### Recursive CTE
+  - Defined by at least 2 queries, the anchor member, and the recursive member
+  - both queries must be compatible ( same num of columns and same data types in columns)
+  ```
+  WITH EmpsCTE AS
+  (
+    SELECT empid, mgrid, firstname, lastname
+    FROM HR.Employees                           <--- anchor member - invoke only once to return table result
+    WHERE empid = 2
+  
+  UNION ALL
+  
+    SELECT C.empid, C.mgrid, C.firstname, C.lastname
+    FROM EmpsCTE AS P                                <--- recursive member - used to call the CTE recursively and uses the results from the last CTE unti         INNER JOIN HR.Employees AS C                            a NULL value is returned then recursive call stops
+        ON C.mgrid = P.empid
+  )
+  SELECT empid, mgrid, firstname, lastname            <-- Outer query used to query the table results from the recursive CTE
+  FROM EmpsCTE;
+
+  ```
+
+## View
+- A reusable table expression that is stored as an object in the DB
+- reusable unlike Derived Tables, and CTE's but treated the same way
+- Can manage access to the view since it is an object
+- Can add attributes and options like encryption to the view
+```
+CREATE OR ALTER VIEW Sales.USACusts  <-- define the view name
+AS
+SELECT custid, companyname
+FROM Sales.Customers          <--- query for the view
+WHERE country = N'USA'
+GO 
+```
+
+## Inline Table-Valued Functions (ITVF)
+- reusable table expression that supports input parameters
+- also an object
+- "parameterized view"
+- allows input to be passed into function
+  ```
+  -- defines the itvf 
+  GO
+      CREATE OR ALTER FUNCTION dbo.GetCustOrders
+        (@cid AS INT) RETURNS TABLE
+      AS
+      RETURN
+        SELECT orderid, custid, empid, orderdate, requireddate,
+          shippeddate, shipperid, freight, shipname, shipaddress, shipcity,
+          shipregion, shippostalcode, shipcountry
+        FROM Sales.Orders
+        WHERE custid = @cid;
+  GO
+
+  SELECT * FROM dbo.GetCustOrders(5)   <--- query to use tvf and pass in parameters
+  ```
