@@ -246,7 +246,7 @@ ORDER BY hiredate DESC
             (SELECT * FROM Sales.Orders AS O
         WHERE O.custid = C.custid);
         ```
-### Ch.5 - Table Expressions
+# Ch.5 - Table Expressions
 - Table expression - An expression, typically a query, that returns a table result
 - Used to help simplify code, improve maintainability, and encapsulate querying logic
 - Named table expression is a table expression assigned a name and you can interact with it like a base table
